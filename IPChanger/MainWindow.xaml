@@ -57,7 +57,7 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
+
         <!--Выбор интерфейса-->
         <StackPanel Background="Wheat" Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,1,0">
             <Label Content="Интерфейс" FontSize="16" />
@@ -66,7 +66,7 @@
 
         <!--Разделитель-->
         <Rectangle Width="1" HorizontalAlignment="Center" Margin="0,5,0,5" Grid.Row="1" Grid.RowSpan="3" Grid.Column="1" Fill="Black"/>
-        
+
         <!--Задание параметров-->
         <Label Grid.Row="1" Margin="3,3,3,3" Content="Задать параметры" FontWeight="SemiBold" />
         <CheckBox Grid.Row="2" x:Name="Dhcp" Margin="3,3,3,3" Content="DHCP" VerticalContentAlignment="Center" />
@@ -86,7 +86,7 @@
             <Label Margin="3,3,0,0" Content="Маска сети" />
             <TextBox Margin="3,0,3,3" Text="{Binding ActualIpConfig.SubnetMask, Mode=OneWay}" IsReadOnly="True" />
         </StackPanel>
-        
+
         <!--Кнопка применения-->
         <Button Grid.Row="4" Grid.ColumnSpan="3" Margin="3,3,3,3" Content="Применить" Command="{Binding SetCommand}" Height="30">
             <Button.CommandParameter>
