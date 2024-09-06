@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IPChanger"
         mc:Ignorable="d"
-        Title="MainWindow" SizeToContent="WidthAndHeight">
+        Title="IP Changer" 
+        SizeToContent="WidthAndHeight"
+        Background="Ivory"
+        ResizeMode="NoResize">
     <Window.DataContext>
         <local:MainVM/>
     </Window.DataContext>
@@ -17,34 +20,82 @@
         <Style TargetType="Label" BasedOn="{StaticResource BaseStyle}" />
         <Style TargetType="TextBox" BasedOn="{StaticResource BaseStyle}" />
         <Style TargetType="RadioButton" BasedOn="{StaticResource BaseStyle}" />
-        <Style TargetType="Button" BasedOn="{StaticResource BaseStyle}" />
         <Style TargetType="CheckBox" BasedOn="{StaticResource BaseStyle}" />
+        <Style TargetType="Button" BasedOn="{StaticResource BaseStyle}">
+            <Style.Setters>
+                <Setter Property="Button.Background" Value="Wheat" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Button.Background" Value="#f5e3c1"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Button.Background" Value="#f5efb8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
-    <DockPanel>
-        <StackPanel Width="150" Margin="3,3,3,3">
-            <Label Margin="3,3,3,3" Content="Задать параметры" FontWeight="SemiBold" />
-            <CheckBox x:Name="Dhcp" Margin="3,3,3,3" Content="DHCP" />
-            <TextBox Margin="3,3,3,3" Text="{Binding InterfaceName, Mode=OneWay}" IsReadOnly="True" />
-            <TextBox x:Name="IpAddress" Text="{Binding IpConfig.IpAddress, Mode=OneTime}" Margin="3,3,3,3" />
-            <TextBox x:Name="SubnetMask" Text="{Binding IpConfig.SubnetMask, Mode=OneTime}" Margin="3,3,3,3" />
-            <Button Margin="3,3,3,3" Height="43" Content="Применить" Command="{Binding SetCommand}">
-                <Button.CommandParameter>
-                    <MultiBinding Converter="{StaticResource IpConfigConverter}">
-                        <Binding ElementName="Dhcp" Path="IsChecked" />
-                        <Binding ElementName="IpAddress" Path="Text" />
-                        <Binding ElementName="SubnetMask" Path="Text" />
-                    </MultiBinding>
-                </Button.CommandParameter>
-            </Button>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        
+        <!--Выбор интерфейса-->
+        <StackPanel Background="Wheat" Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,1,0">
+            <Label Content="Интерфейс" FontSize="16" />
+            <TextBox Margin="3,3,3,3" Text="{Binding InterfaceName, Mode=OneWay}" FontSize="16" IsReadOnly="True" />
         </StackPanel>
-        <GridSplitter Width="5"/>
-        <StackPanel Width="150" Margin="3,3,3,3">
-            <Label Margin="3,3,3,3" Content="Текущие параметы" FontWeight="SemiBold" />
-            <Label Margin="3,3,3,3" Content="{Binding ActualIpConfig.DhcpEnabled, Converter={StaticResource DhpcFlagToStringConverter}, Mode=OneWay}" />
+
+        <!--Разделитель-->
+        <Rectangle Width="1" HorizontalAlignment="Center" Margin="0,5,0,5" Grid.Row="1" Grid.RowSpan="3" Grid.Column="1" Fill="Black"/>
+        
+        <!--Задание параметров-->
+        <Label Grid.Row="1" Margin="3,3,3,3" Content="Задать параметры" FontWeight="SemiBold" />
+        <CheckBox Grid.Row="2" x:Name="Dhcp" Margin="3,3,3,3" Content="DHCP" VerticalContentAlignment="Center" />
+        <StackPanel Grid.Row="3" Grid.Column="0">
+            <Label Margin="3,3,3,0" Content="IPv4 адрес" />
+            <TextBox x:Name="IpAddress" Margin="3,0,3,3" Text="{Binding IpConfig.IpAddress, Mode=OneTime}" />
+            <Label Margin="3,3,3,0" Content="Маска сети" />
+            <TextBox x:Name="SubnetMask" Margin="3,0,3,3" Text="{Binding IpConfig.SubnetMask, Mode=OneTime}" />
+        </StackPanel>
+
+        <!--Текущие параметры-->
+        <Label Grid.Row="1" Grid.Column="2" Margin="3,3,3,3" Content="Текущие параметы" FontWeight="SemiBold" />
+        <Label Grid.Row="2" Grid.Column="2" Margin="3,3,3,3" HorizontalAlignment="Center" Content="{Binding ActualIpConfig.DhcpEnabled, Converter={StaticResource DhpcFlagToStringConverter}, Mode=OneWay}" />
+        <StackPanel Grid.Row="3" Grid.Column="2">
             <Label Margin="3,3,0,0" Content="IPv4 адрес" />
-            <TextBox Margin="0,0,3,3" Text="{Binding ActualIpConfig.IpAddress, Mode=OneWay}" IsReadOnly="True" />
+            <TextBox Margin="3,0,3,3" Text="{Binding ActualIpConfig.IpAddress, Mode=OneWay}" IsReadOnly="True" />
             <Label Margin="3,3,0,0" Content="Маска сети" />
-            <TextBox Margin="0,0,3,3" Text="{Binding ActualIpConfig.SubnetMask, Mode=OneWay}" IsReadOnly="True" />
+            <TextBox Margin="3,0,3,3" Text="{Binding ActualIpConfig.SubnetMask, Mode=OneWay}" IsReadOnly="True" />
         </StackPanel>
-    </DockPanel>
+        
+        <!--Кнопка применения-->
+        <Button Grid.Row="4" Grid.ColumnSpan="3" Margin="3,3,3,3" Content="Применить" Command="{Binding SetCommand}" Height="30">
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource IpConfigConverter}">
+                    <Binding ElementName="Dhcp" Path="IsChecked" />
+                    <Binding ElementName="IpAddress" Path="Text" />
+                    <Binding ElementName="SubnetMask" Path="Text" />
+                </MultiBinding>
+            </Button.CommandParameter>
+        </Button>
+    </Grid>
 </Window>
