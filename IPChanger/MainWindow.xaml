@@ -1,0 +1,50 @@
+﻿<Window x:Class="IPChanger.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IPChanger"
+        mc:Ignorable="d"
+        Title="MainWindow" SizeToContent="WidthAndHeight">
+    <Window.DataContext>
+        <local:MainVM/>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style x:Key="BaseStyle">
+            <Setter Property="ItemsControl.FontFamily" Value="Arial" />
+            <Setter Property="ItemsControl.FontSize" Value="14" />
+        </Style>
+        <Style TargetType="Label" BasedOn="{StaticResource BaseStyle}" />
+        <Style TargetType="TextBox" BasedOn="{StaticResource BaseStyle}" />
+        <Style TargetType="RadioButton" BasedOn="{StaticResource BaseStyle}" />
+        <Style TargetType="Button" BasedOn="{StaticResource BaseStyle}" />
+        <Style TargetType="CheckBox" BasedOn="{StaticResource BaseStyle}" />
+    </Window.Resources>
+    <DockPanel>
+        <StackPanel Width="150" Margin="3,3,3,3">
+            <Label Margin="3,3,3,3" Content="Задать параметры" FontWeight="SemiBold" />
+            <CheckBox x:Name="Dhcp" Margin="3,3,3,3" Content="DHCP" />
+            <TextBox Margin="3,3,3,3" Text="{Binding InterfaceName, Mode=OneWay}" IsReadOnly="True" />
+            <TextBox x:Name="IpAddress" Text="{Binding IpConfig.IpAddress, Mode=OneTime}" Margin="3,3,3,3" />
+            <TextBox x:Name="SubnetMask" Text="{Binding IpConfig.SubnetMask, Mode=OneTime}" Margin="3,3,3,3" />
+            <Button Margin="3,3,3,3" Height="43" Content="Применить" Command="{Binding SetCommand}">
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource IpConfigConverter}">
+                        <Binding ElementName="Dhcp" Path="IsChecked" />
+                        <Binding ElementName="IpAddress" Path="Text" />
+                        <Binding ElementName="SubnetMask" Path="Text" />
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+        </StackPanel>
+        <GridSplitter Width="5"/>
+        <StackPanel Width="150" Margin="3,3,3,3">
+            <Label Margin="3,3,3,3" Content="Текущие параметы" FontWeight="SemiBold" />
+            <Label Margin="3,3,3,3" Content="{Binding ActualIpConfig.DhcpEnabled, Converter={StaticResource DhpcFlagToStringConverter}, Mode=OneWay}" />
+            <Label Margin="3,3,0,0" Content="IPv4 адрес" />
+            <TextBox Margin="0,0,3,3" Text="{Binding ActualIpConfig.IpAddress, Mode=OneWay}" IsReadOnly="True" />
+            <Label Margin="3,3,0,0" Content="Маска сети" />
+            <TextBox Margin="0,0,3,3" Text="{Binding ActualIpConfig.SubnetMask, Mode=OneWay}" IsReadOnly="True" />
+        </StackPanel>
+    </DockPanel>
+</Window>
