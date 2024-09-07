@@ -1,5 +1,6 @@
 ﻿using System.Net.NetworkInformation;
 using IPChanger.NetworkConfiguration;
+using Prism.Mvvm;
 
 namespace IPChanger
 {

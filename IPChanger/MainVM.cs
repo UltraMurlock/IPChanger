@@ -2,6 +2,8 @@
 using System.Text.RegularExpressions;
 using System.Windows;
 using IPChanger.NetworkConfiguration;
+using Prism.Mvvm;
+using Prism.Commands;
 
 namespace IPChanger
 {
