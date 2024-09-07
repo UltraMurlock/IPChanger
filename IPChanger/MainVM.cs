@@ -7,10 +7,6 @@ namespace IPChanger
     {
         public string InterfaceName => _model.InterfaceName;
 
-        public bool ActualDhcpEnabled => _model.ActualIpConfig.DhcpEnabled;
-        public string ActualIpAddress => _model.ActualIpConfig.IpAddress;
-        public string ActualSubnetMask => _model.ActualIpConfig.SubnetMask;
-
         public IpConfig ActualIpConfig
         {
             get { return _model.ActualIpConfig; }
