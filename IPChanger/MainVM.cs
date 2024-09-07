@@ -9,29 +9,17 @@ namespace IPChanger
 
         public string SelectedAdapterName 
         { 
-            get
-            {
-                return _model.SelectedAdapterName;
-            }
-            set
-            {
-                _model.SelectAdapter(value);
-            } 
+            get => _model.SelectedAdapterName;
+            set => _model.SelectAdapter(value);
         }
 
         public bool SelectedValidAdapter => _model.SelectedValidAdapter;
 
-        public IpConfig ActualIpConfig
-        {
-            get { return _model.ActualIpConfig; }
-        }
-
-        public IpConfig IpConfig
-        {
-            get { return _model.GetPreviousConfig(SelectedAdapterName ?? string.Empty); }
-        }
+        public IpConfig ActualIpConfig => _model.ActualIpConfig;
+        public IpConfig IpConfig => _model.GetPreviousConfig(SelectedAdapterName ?? string.Empty);
 
         public DelegateCommand<IpConfig> SetCommand { get; }
+
 
         private readonly Model _model;
 
