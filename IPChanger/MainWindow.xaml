@@ -73,10 +73,10 @@
                   IsEnabled="{Binding SelectedValidAdapter}" />
         <StackPanel Grid.Row="3" Grid.Column="0">
             <Label Margin="3,3,3,0" Content="IPv4 адрес" />
-            <TextBox x:Name="IpAddress" Margin="3,0,3,3" Text="{Binding IpConfig.IpAddress}" 
+            <TextBox x:Name="IpAddress" Margin="3,0,3,3" Text="{Binding IpConfig.IpAddress, Mode=OneWay}" 
                      IsEnabled="{Binding SelectedValidAdapter}" />
             <Label Margin="3,3,3,0" Content="Маска сети" />
-            <TextBox x:Name="SubnetMask" Margin="3,0,3,3" Text="{Binding IpConfig.SubnetMask}"
+            <TextBox x:Name="SubnetMask" Margin="3,0,3,3" Text="{Binding IpConfig.SubnetMask, Mode=OneWay}"
                      IsEnabled="{Binding SelectedValidAdapter}"/>
         </StackPanel>
 
