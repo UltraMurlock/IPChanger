@@ -42,7 +42,7 @@ namespace IPChanger
         {
             SaveIpConfig(ipConfig);
 
-            if(ipConfig.DhcpEnabled && CheckDhcp() == ipConfig.DhcpEnabled)
+            if(ipConfig.DhcpEnabled && ActualIpConfig.DhcpEnabled == ipConfig.DhcpEnabled)
                 return;
 
             if(ipConfig.DhcpEnabled)
@@ -92,13 +92,6 @@ namespace IPChanger
                 IpAddress = ipAddress,
                 SubnetMask = subnetMask
             };
-        }
-
-        private bool CheckDhcp()
-        {
-            var networkInterface = GetNetworkInterface(InterfaceName);
-            IPv4InterfaceProperties ipv4Properites = networkInterface.GetIPProperties().GetIPv4Properties();
-            return ipv4Properites.IsDhcpEnabled;
         }
 
         private NetworkInterface? GetNetworkInterface(string interfaceName)
