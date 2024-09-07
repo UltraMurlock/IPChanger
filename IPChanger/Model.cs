@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Text.Json;
 using IPChanger.NetworkConfiguration;
 
@@ -9,8 +7,11 @@ namespace IPChanger
 {
     internal class Model : BindableBase
     {
-        public string InterfaceName = "Ethernet";
         public IpConfig ActualIpConfig;
+
+        public string[] AvailableInterfaces => GetAvailableInterfaceNames();
+
+        private NetworkAdapter? _adapter;
 
         private const string _previousConfigPath = ".\\last-config.json";
 
@@ -24,33 +25,37 @@ namespace IPChanger
         public void Initialize()
         {
             Task.Run(ActualUpdateLoopAsync);
-            RaisePropertyChanged("InterfaceName");
+            RaisePropertyChanged(nameof(AvailableInterfaces));
         }
-
-
 
         public async Task ActualUpdateLoopAsync()
         {
             while(true)
             {
-                UpdateActualIpConfig();
-                await Task.Delay(1000);
+                if(_adapter != null)
+                {
+                    ActualIpConfig = _adapter.GetActualConfig();
+                    RaisePropertyChanged("ActualIpConfig");
+                }
+
+                await Task.Delay(100);
             }
         }
 
-        public void UpdateIpSettings(IpConfig ipConfig)
-        {
-            SaveIpConfig(ipConfig);
 
-            if(ipConfig.DhcpEnabled && ActualIpConfig.DhcpEnabled == ipConfig.DhcpEnabled)
+
+        public void SelectAdapter(string interfaceName)
+        {
+            if(interfaceName == string.Empty)
                 return;
 
-            if(ipConfig.DhcpEnabled)
-                NetworkConfigurator.SetDhcp(InterfaceName);
-            else
-                NetworkConfigurator.SetIp(InterfaceName, ipConfig.IpAddress, ipConfig.SubnetMask);
+            _adapter = new NetworkAdapter(interfaceName);
+        }
 
-            UpdateActualIpConfig();
+        public void SetConfig(IpConfig ipConfig)
+        {
+            SaveIpConfig(ipConfig);
+            _adapter?.SetConfig(ipConfig);
         }
 
         public IpConfig LoadPreviousIpConfig()
@@ -63,46 +68,17 @@ namespace IPChanger
         }
 
 
-        private void UpdateActualIpConfig()
+
+        private string[] GetAvailableInterfaceNames()
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            ActualIpConfig = GetActualIpConfig();
-            RaisePropertyChanged("ActualIpConfig");
-            sw.Stop();
-        }
-
-        private IpConfig GetActualIpConfig()
-        {
-            var networkInterface = GetNetworkInterface(InterfaceName);
-            if(networkInterface == null)
-                throw new Exception("Wrong interface name");
-
-            IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
-            IPv4InterfaceProperties ipv4Properites = ipProperties.GetIPv4Properties();
-
-            UnicastIPAddressInformation? ipInfo = null;
-            ipInfo = ipProperties.UnicastAddresses.FirstOrDefault(ip => ip.Address.AddressFamily == AddressFamily.InterNetwork);
-
-            string ipAddress = ipInfo?.Address.ToString() ?? string.Empty;
-            string subnetMask = ipInfo?.IPv4Mask.ToString() ?? string.Empty;
-
-            return new IpConfig {
-                DhcpEnabled = ipv4Properites.IsDhcpEnabled,
-                IpAddress = ipAddress,
-                SubnetMask = subnetMask
-            };
-        }
-
-        private NetworkInterface? GetNetworkInterface(string interfaceName)
-        {
+            List<string> availables = new List<string>();
             foreach(NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces())
             {
-                if(networkInterface.Name == interfaceName)
-                    return networkInterface;
+                var interfaceType = networkInterface.NetworkInterfaceType;
+                if(interfaceType == NetworkInterfaceType.Ethernet || interfaceType == NetworkInterfaceType.Wireless80211)
+                    availables.Add(networkInterface.Name);
             }
-
-            return null;
+            return availables.ToArray();
         }
 
         private void SaveIpConfig(IpConfig ipConfig)

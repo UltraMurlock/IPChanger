@@ -5,7 +5,8 @@ namespace IPChanger
 {
     internal class MainVM : BindableBase
     {
-        public string InterfaceName => _model.InterfaceName;
+        public string[] AvailableInterfaces => _model.AvailableInterfaces;
+        public string SelectedInterface { set => _model.SelectAdapter(value); }
 
         public IpConfig ActualIpConfig
         {
@@ -31,7 +32,7 @@ namespace IPChanger
 
             SetCommand = new DelegateCommand<IpConfig>(IpConfig => {
                 //Тут нужна проверка на валидность ввода
-                _model.UpdateIpSettings(IpConfig);
+                _model.SetConfig(IpConfig);
             });
         }
 

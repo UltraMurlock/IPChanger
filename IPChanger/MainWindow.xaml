@@ -61,7 +61,7 @@
         <!--Выбор интерфейса-->
         <StackPanel Background="Wheat" Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,1,0">
             <Label Content="Интерфейс" FontSize="16" />
-            <TextBox Margin="3,3,3,3" Text="{Binding InterfaceName, Mode=OneWay}" FontSize="16" IsReadOnly="True" />
+            <ComboBox Margin="3,3,3,3" SelectedItem="0" ItemsSource="{Binding AvailableInterfaces}" SelectedValue="{Binding SelectedInterface}" FontSize="16" />
         </StackPanel>
 
         <!--Разделитель-->
