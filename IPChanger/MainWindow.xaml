@@ -75,7 +75,7 @@
             <Label Margin="3,3,3,0" Content="IPv4 адрес" />
             <TextBox x:Name="IpAddress" Margin="3,0,3,3" Text="{Binding IpConfig.IpAddress, Mode=OneWay}" 
                      IsEnabled="{Binding SelectedValidAdapter}" />
-            <Label Margin="3,3,3,0" Content="Маска сети" />
+            <Label Margin="3,3,3,0" Content="Маска подсети" />
             <TextBox x:Name="SubnetMask" Margin="3,0,3,3" Text="{Binding IpConfig.SubnetMask, Mode=OneWay}"
                      IsEnabled="{Binding SelectedValidAdapter}"/>
         </StackPanel>
@@ -88,7 +88,7 @@
             <Label Margin="3,3,0,0" Content="IPv4 адрес" />
             <TextBox Margin="3,0,3,3" Text="{Binding ActualIpConfig.IpAddress, Mode=OneWay}" IsReadOnly="True" 
                      IsEnabled="{Binding SelectedValidAdapter}" />
-            <Label Margin="3,3,0,0" Content="Маска сети" />
+            <Label Margin="3,3,0,0" Content="Маска подсети" />
             <TextBox Margin="3,0,3,3" Text="{Binding ActualIpConfig.SubnetMask, Mode=OneWay}" IsReadOnly="True" 
                      IsEnabled="{Binding SelectedValidAdapter}" />
         </StackPanel>
