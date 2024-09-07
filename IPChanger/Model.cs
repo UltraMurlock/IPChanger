@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Net.NetworkInformation;
-using System.Text.Json;
+﻿using System.Net.NetworkInformation;
 using IPChanger.NetworkConfiguration;
 
 namespace IPChanger
@@ -12,15 +10,20 @@ namespace IPChanger
         public string[] AvailableInterfaces => GetAvailableInterfaceNames();
 
         public bool SelectedValidAdapter => _adapter != null;
+        public string SelectedAdapterName => _adapter?.Name ?? string.Empty;
         private NetworkAdapter? _adapter;
 
-        private const string _previousConfigPath = ".\\last-config.json";
+        private const string _settingsPath = ".\\settings.json";
+        private Settings _settings;
 
 
 
         public Model()
         {
             ActualIpConfig = new IpConfig();
+
+            _settings = Settings.Load(_settingsPath);
+            SelectAdapter(_settings.SelectedAdapter);
         }
 
         public void Initialize()
@@ -28,6 +31,7 @@ namespace IPChanger
             Task.Run(ActualUpdateLoopAsync);
             RaisePropertyChanged(nameof(AvailableInterfaces));
             RaisePropertyChanged(nameof(SelectedValidAdapter));
+            RaisePropertyChanged(nameof(SelectedAdapterName));
         }
 
         public async Task ActualUpdateLoopAsync()
@@ -51,23 +55,30 @@ namespace IPChanger
             if(interfaceName == string.Empty)
                 return;
 
+            _settings.SelectedAdapter = interfaceName;
+            _settings.Save(_settingsPath);
+
             _adapter = new NetworkAdapter(interfaceName);
             RaisePropertyChanged(nameof(SelectedValidAdapter));
+            RaisePropertyChanged("IpConfig");
         }
 
-        public void SetConfig(IpConfig ipConfig)
+
+
+        public void SetConfig(string interfaceName, IpConfig ipConfig)
         {
-            SaveIpConfig(ipConfig);
-            _adapter?.SetConfig(ipConfig);
+            if(_adapter == null)
+                return;
+
+            _settings.SetConfig(ipConfig, interfaceName);
+            _settings.Save(_settingsPath);
+
+            _adapter.SetConfig(ipConfig);
         }
 
-        public IpConfig LoadPreviousIpConfig()
+        public IpConfig GetPreviousConfig(string interfaceName)
         {
-            if(!File.Exists(_previousConfigPath))
-                return IpConfig.Default;
-
-            using(FileStream stream = new FileStream(_previousConfigPath, FileMode.Open, FileAccess.Read))
-                return JsonSerializer.Deserialize<IpConfig>(stream) ?? IpConfig.Default;
+            return _settings.GetConfig(interfaceName);
         }
 
 
@@ -82,12 +93,6 @@ namespace IPChanger
                     availables.Add(networkInterface.Name);
             }
             return availables.ToArray();
-        }
-
-        private void SaveIpConfig(IpConfig ipConfig)
-        {
-            using(FileStream stream = new FileStream(_previousConfigPath, FileMode.Create, FileAccess.Write))
-                JsonSerializer.Serialize(stream, ipConfig);
         }
     }
 }

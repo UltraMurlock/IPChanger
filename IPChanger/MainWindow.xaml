@@ -61,7 +61,7 @@
         <!--Выбор интерфейса-->
         <StackPanel Background="Wheat" Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,1,0">
             <Label Content="Интерфейс" FontSize="16" />
-            <ComboBox Margin="3,3,3,3" SelectedItem="0" ItemsSource="{Binding AvailableInterfaces}" SelectedValue="{Binding SelectedInterface}" FontSize="16" />
+            <ComboBox Margin="3,3,3,3" SelectedItem="0" ItemsSource="{Binding AvailableInterfaces}" SelectedValue="{Binding SelectedAdapterName, UpdateSourceTrigger=PropertyChanged}" FontSize="16" />
         </StackPanel>
 
         <!--Разделитель-->
@@ -73,10 +73,10 @@
                   IsEnabled="{Binding SelectedValidAdapter}" />
         <StackPanel Grid.Row="3" Grid.Column="0">
             <Label Margin="3,3,3,0" Content="IPv4 адрес" />
-            <TextBox x:Name="IpAddress" Margin="3,0,3,3" Text="{Binding IpConfig.IpAddress, Mode=OneTime}" 
+            <TextBox x:Name="IpAddress" Margin="3,0,3,3" Text="{Binding IpConfig.IpAddress}" 
                      IsEnabled="{Binding SelectedValidAdapter}" />
             <Label Margin="3,3,3,0" Content="Маска сети" />
-            <TextBox x:Name="SubnetMask" Margin="3,0,3,3" Text="{Binding IpConfig.SubnetMask, Mode=OneTime}"
+            <TextBox x:Name="SubnetMask" Margin="3,0,3,3" Text="{Binding IpConfig.SubnetMask}"
                      IsEnabled="{Binding SelectedValidAdapter}"/>
         </StackPanel>
 

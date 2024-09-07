@@ -6,7 +6,18 @@ namespace IPChanger
     internal class MainVM : BindableBase
     {
         public string[] AvailableInterfaces => _model.AvailableInterfaces;
-        public string SelectedInterface { set => _model.SelectAdapter(value); }
+
+        public string SelectedAdapterName 
+        { 
+            get
+            {
+                return _model.SelectedAdapterName;
+            }
+            set
+            {
+                _model.SelectAdapter(value);
+            } 
+        }
 
         public bool SelectedValidAdapter => _model.SelectedValidAdapter;
 
@@ -17,7 +28,7 @@ namespace IPChanger
 
         public IpConfig IpConfig
         {
-            get { return _model.LoadPreviousIpConfig(); }
+            get { return _model.GetPreviousConfig(SelectedAdapterName ?? string.Empty); }
         }
 
         public DelegateCommand<IpConfig> SetCommand { get; }
@@ -34,7 +45,7 @@ namespace IPChanger
 
             SetCommand = new DelegateCommand<IpConfig>(IpConfig => {
                 //Тут нужна проверка на валидность ввода
-                _model.SetConfig(IpConfig);
+                _model.SetConfig(SelectedAdapterName, IpConfig);
             });
         }
 
