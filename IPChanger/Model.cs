@@ -53,13 +53,13 @@ namespace IPChanger
             UpdateActualIpConfig();
         }
 
-        public IpConfig? LoadPreviousIpConfig()
+        public IpConfig LoadPreviousIpConfig()
         {
             if(!File.Exists(_previousConfigPath))
-                return null;
+                return IpConfig.Default;
 
             using(FileStream stream = new FileStream(_previousConfigPath, FileMode.Open, FileAccess.Read))
-                return JsonSerializer.Deserialize<IpConfig>(stream);
+                return JsonSerializer.Deserialize<IpConfig>(stream) ?? IpConfig.Default;
         }
 
 
