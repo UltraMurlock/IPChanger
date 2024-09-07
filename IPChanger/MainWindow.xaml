@@ -69,22 +69,28 @@
 
         <!--Задание параметров-->
         <Label Grid.Row="1" Margin="3,3,3,3" Content="Задать параметры" FontWeight="SemiBold" />
-        <CheckBox Grid.Row="2" x:Name="Dhcp" Margin="3,3,3,3" Content="DHCP" VerticalContentAlignment="Center" />
+        <CheckBox Grid.Row="2" x:Name="Dhcp" Margin="3,3,3,3" Content="DHCP" VerticalContentAlignment="Center" 
+                  IsEnabled="{Binding SelectedValidAdapter}" />
         <StackPanel Grid.Row="3" Grid.Column="0">
             <Label Margin="3,3,3,0" Content="IPv4 адрес" />
-            <TextBox x:Name="IpAddress" Margin="3,0,3,3" Text="{Binding IpConfig.IpAddress, Mode=OneTime}" />
+            <TextBox x:Name="IpAddress" Margin="3,0,3,3" Text="{Binding IpConfig.IpAddress, Mode=OneTime}" 
+                     IsEnabled="{Binding SelectedValidAdapter}" />
             <Label Margin="3,3,3,0" Content="Маска сети" />
-            <TextBox x:Name="SubnetMask" Margin="3,0,3,3" Text="{Binding IpConfig.SubnetMask, Mode=OneTime}" />
+            <TextBox x:Name="SubnetMask" Margin="3,0,3,3" Text="{Binding IpConfig.SubnetMask, Mode=OneTime}"
+                     IsEnabled="{Binding SelectedValidAdapter}"/>
         </StackPanel>
 
         <!--Текущие параметры-->
         <Label Grid.Row="1" Grid.Column="2" Margin="3,3,3,3" Content="Текущие параметы" FontWeight="SemiBold" />
-        <Label Grid.Row="2" Grid.Column="2" Margin="3,3,3,3" HorizontalAlignment="Center" Content="{Binding ActualIpConfig.DhcpEnabled, Converter={StaticResource DhpcFlagToStringConverter}, Mode=OneWay}" />
+        <Label Grid.Row="2" Grid.Column="2" Margin="3,3,3,3" HorizontalAlignment="Center" Content="{Binding ActualIpConfig.DhcpEnabled, Converter={StaticResource DhpcFlagToStringConverter}, Mode=OneWay}" 
+               IsEnabled="{Binding SelectedValidAdapter}" />
         <StackPanel Grid.Row="3" Grid.Column="2">
             <Label Margin="3,3,0,0" Content="IPv4 адрес" />
-            <TextBox Margin="3,0,3,3" Text="{Binding ActualIpConfig.IpAddress, Mode=OneWay}" IsReadOnly="True" />
+            <TextBox Margin="3,0,3,3" Text="{Binding ActualIpConfig.IpAddress, Mode=OneWay}" IsReadOnly="True" 
+                     IsEnabled="{Binding SelectedValidAdapter}" />
             <Label Margin="3,3,0,0" Content="Маска сети" />
-            <TextBox Margin="3,0,3,3" Text="{Binding ActualIpConfig.SubnetMask, Mode=OneWay}" IsReadOnly="True" />
+            <TextBox Margin="3,0,3,3" Text="{Binding ActualIpConfig.SubnetMask, Mode=OneWay}" IsReadOnly="True" 
+                     IsEnabled="{Binding SelectedValidAdapter}" />
         </StackPanel>
 
         <!--Кнопка применения-->

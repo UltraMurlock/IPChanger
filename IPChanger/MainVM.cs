@@ -8,6 +8,8 @@ namespace IPChanger
         public string[] AvailableInterfaces => _model.AvailableInterfaces;
         public string SelectedInterface { set => _model.SelectAdapter(value); }
 
+        public bool SelectedValidAdapter => _model.SelectedValidAdapter;
+
         public IpConfig ActualIpConfig
         {
             get { return _model.ActualIpConfig; }

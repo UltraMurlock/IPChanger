@@ -11,6 +11,7 @@ namespace IPChanger
 
         public string[] AvailableInterfaces => GetAvailableInterfaceNames();
 
+        public bool SelectedValidAdapter => _adapter != null;
         private NetworkAdapter? _adapter;
 
         private const string _previousConfigPath = ".\\last-config.json";
@@ -26,6 +27,7 @@ namespace IPChanger
         {
             Task.Run(ActualUpdateLoopAsync);
             RaisePropertyChanged(nameof(AvailableInterfaces));
+            RaisePropertyChanged(nameof(SelectedValidAdapter));
         }
 
         public async Task ActualUpdateLoopAsync()
@@ -50,6 +52,7 @@ namespace IPChanger
                 return;
 
             _adapter = new NetworkAdapter(interfaceName);
+            RaisePropertyChanged(nameof(SelectedValidAdapter));
         }
 
         public void SetConfig(IpConfig ipConfig)
