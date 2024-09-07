@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Windows;
 using IPChanger.NetworkConfiguration;
 
 namespace IPChanger
@@ -32,7 +34,21 @@ namespace IPChanger
             _model.Initialize();
 
             SetCommand = new DelegateCommand<IpConfig>(IpConfig => {
-                //Тут нужна проверка на валидность ввода
+
+                string pattern = "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$";
+
+                if(!Regex.IsMatch(IpConfig.IpAddress, pattern))
+                {
+                    MessageBox.Show("Неверно введёт IP адрес");
+                    return;
+                }
+
+                if(!Regex.IsMatch(IpConfig.SubnetMask, pattern))
+                {
+                    MessageBox.Show("Неверно введена маска подсети");
+                    return;
+                }
+
                 _model.SetConfig(SelectedAdapterName, IpConfig);
             });
         }
