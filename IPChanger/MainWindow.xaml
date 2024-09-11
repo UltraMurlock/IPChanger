@@ -8,7 +8,7 @@
         Title="IP Changer" 
         SizeToContent="WidthAndHeight"
         Background="Ivory"
-        ResizeMode="NoResize">
+        ResizeMode="CanMinimize">
     <Window.DataContext>
         <local:MainVM/>
     </Window.DataContext>
