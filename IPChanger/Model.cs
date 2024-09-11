@@ -29,23 +29,43 @@ namespace IPChanger
 
         public void Initialize()
         {
-            Task.Run(ActualUpdateLoopAsync);
+            Task.Run(UpdateActualIpAsync);
+            Task.Run(ActualIpUpdateLoopAsync);
             RaisePropertyChanged(nameof(AvailableInterfaces));
             RaisePropertyChanged(nameof(SelectedValidAdapter));
             RaisePropertyChanged(nameof(SelectedAdapterName));
         }
 
-        public async Task ActualUpdateLoopAsync()
+        public async Task UpdateActualIpAsync()
+        {
+            if(_adapter == null)
+                return;
+
+            IpConfig ipConfig;
+            while(true)
+            {
+                ipConfig = _adapter.GetActualConfig();
+                if(ipConfig.IpAddress != string.Empty)
+                    break;
+
+                await Task.Delay(100);
+            }
+
+            ActualIpConfig = ipConfig;
+            RaisePropertyChanged(nameof(ActualIpConfig));
+        }
+
+        public async Task ActualIpUpdateLoopAsync()
         {
             while(true)
             {
+                await Task.Delay(5000);
+
                 if(_adapter != null)
                 {
                     ActualIpConfig = _adapter.GetActualConfig();
                     RaisePropertyChanged("ActualIpConfig");
                 }
-
-                await Task.Delay(100);
             }
         }
 
@@ -62,6 +82,8 @@ namespace IPChanger
             _adapter = new NetworkAdapter(interfaceName);
             RaisePropertyChanged(nameof(SelectedValidAdapter));
             RaisePropertyChanged("IpConfig");
+
+            Task.Run(UpdateActualIpAsync);
         }
 
 
@@ -75,6 +97,8 @@ namespace IPChanger
             _settings.Save(_settingsPath);
 
             _adapter.SetConfig(ipConfig);
+
+            Task.Run(UpdateActualIpAsync);
         }
 
         public IpConfig GetPreviousConfig(string interfaceName)
