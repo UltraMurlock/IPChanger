@@ -11,9 +11,7 @@
     <AssemblyVersion>1.0.1</AssemblyVersion>
     <FileVersion>1.0.1</FileVersion>
     <Authors>UltraMurlock</Authors>
-    <Company></Company>
-    <Version>1.0.1</Version>
-    <Copyright>UltraMurlock</Copyright>
+    <Company>UltraMurlock</Company>
   </PropertyGroup>
 
   <ItemGroup>
