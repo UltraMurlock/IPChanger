@@ -8,7 +8,9 @@
         Title="IP Changer" 
         SizeToContent="WidthAndHeight"
         Background="Ivory"
-        ResizeMode="CanMinimize">
+        ResizeMode="CanMinimize"
+        WindowState="{Binding WindowState, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}">
+
     <Window.DataContext>
         <local:MainVM/>
     </Window.DataContext>

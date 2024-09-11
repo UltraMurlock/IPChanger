@@ -24,6 +24,17 @@ namespace IPChanger
 
         public DelegateCommand<IpConfig> SetCommand { get; }
 
+        public WindowState WindowState
+        {
+            set
+            {
+                if(value != WindowState.Minimized)
+                    _model.StartUpdatingLoop();
+                else
+                    _model.StopUpdatingLoop();
+            }
+        }
+
 
         private readonly Model _model;
 

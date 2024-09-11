@@ -17,6 +17,8 @@ namespace IPChanger
         private const string _settingsPath = ".\\settings.json";
         private Settings _settings;
 
+        private CancellationTokenSource? _updateLoopCTS;
+
 
 
         public Model()
@@ -30,7 +32,6 @@ namespace IPChanger
         public void Initialize()
         {
             Task.Run(UpdateActualIpAsync);
-            Task.Run(ActualIpUpdateLoopAsync);
             RaisePropertyChanged(nameof(AvailableInterfaces));
             RaisePropertyChanged(nameof(SelectedValidAdapter));
             RaisePropertyChanged(nameof(SelectedAdapterName));
@@ -51,21 +52,52 @@ namespace IPChanger
                 await Task.Delay(100);
             }
 
+            if(ipConfig == ActualIpConfig)
+                return;
+
             ActualIpConfig = ipConfig;
             RaisePropertyChanged(nameof(ActualIpConfig));
         }
 
-        public async Task ActualIpUpdateLoopAsync()
+
+
+        public void StartUpdatingLoop()
+        {
+            if(_updateLoopCTS != null)
+                return;
+
+            _updateLoopCTS = new CancellationTokenSource();
+            Task.Run(() => ActualIpUpdateLoopAsync(_updateLoopCTS.Token), _updateLoopCTS.Token);
+        }
+
+        public void StopUpdatingLoop()
+        {
+            if(_updateLoopCTS == null)
+                return;
+
+            _updateLoopCTS.Cancel();
+            _updateLoopCTS = null;
+        }
+
+        private async Task ActualIpUpdateLoopAsync(CancellationToken token)
         {
             while(true)
             {
-                await Task.Delay(5000);
-
                 if(_adapter != null)
                 {
-                    ActualIpConfig = _adapter.GetActualConfig();
-                    RaisePropertyChanged("ActualIpConfig");
+                    IpConfig ipConfig = _adapter.GetActualConfig();
+
+                    if(ipConfig != ActualIpConfig)
+                    {
+                        ActualIpConfig = ipConfig;
+                        RaisePropertyChanged("ActualIpConfig");
+                    }
                 }
+
+                await Task.Delay(1000);
+
+                if(token.IsCancellationRequested)
+                    return;
             }
         }
 
